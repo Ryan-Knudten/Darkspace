@@ -11,6 +11,7 @@ public class Submission implements Serializable {
     public Submission() {
         this.responses = new Hashtable<String, Integer>();
     }
+    
     //#region Get/Set
     public Hashtable<String, Integer> getResponses() {
         return this.responses;

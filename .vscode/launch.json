@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Client",
+            "request": "launch",
+            "mainClass": "Executables.Client",
+            "projectName": "CS180-Project5_9b155632"
+        },
+        {
+            "type": "java",
+            "name": "Launch Server",
+            "request": "launch",
+            "mainClass": "Executables.Server",
+            "projectName": "CS180-Project5_9b155632"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Compound",
+            "configurations": ["Launch Server", "Launch Client"]
+        }
+    ]
+}
