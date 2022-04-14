@@ -20,7 +20,7 @@ public class Controller {
     }
     //#endregion
 
-    public Callback handleRequest(Request request) {
+    public synchronized Callback handleRequest(Request request) {
         switch(request.getRequestType()) {
             case CREATE_USER:
                 return null;
