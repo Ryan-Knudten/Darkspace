@@ -1,4 +1,5 @@
 package Networking;
+
 public enum RequestType {
     CREATE_USER,
     LOGIN_USER,

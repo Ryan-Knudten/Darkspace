@@ -21,18 +21,13 @@ public class ServerThread extends Thread {
 
             while (true) {
                 Request request = (Request)ois.readObject();
-                if(request.getRequestType() == RequestType.DISCONNECT) {
-                    break;
-                }
                 Callback callback = controller.handleRequest(request);
                 oos.writeObject(callback);
                 oos.flush();
             }
-            
-            oos.close();
-            ois.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Client Disconnected");
+            return;
         }
     }
 }

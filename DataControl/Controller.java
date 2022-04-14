@@ -1,4 +1,5 @@
 package DataControl;
+
 import Model.Model;
 import Networking.Callback;
 import Networking.Request;
@@ -32,7 +33,7 @@ public class Controller {
                 return null;
 
             case CREATE_COURSE:
-                return null;
+                return new Callback(model, true, "Changed text omg!");
 
             case DELETE_COURSE:
                 return null;
