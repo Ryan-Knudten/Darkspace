@@ -1,3 +1,4 @@
+package Networking;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,6 +10,7 @@ public class Request implements Serializable {
         this.requestType = requestType;
         this.data = data;
     }
+    
     //#region Get/Set
     public RequestType getRequestType() {
         return this.requestType;

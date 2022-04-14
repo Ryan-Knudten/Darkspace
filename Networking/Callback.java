@@ -1,3 +1,4 @@
+package Networking;
 import java.io.Serializable;
 
 import Model.Model;
@@ -12,7 +13,7 @@ public class Callback implements Serializable {
         this.didRequestWork = didRequestWork;
         this.message = message;
     }
-
+    
     //#region Get/Set
     public Model getModel() {
         return this.model;

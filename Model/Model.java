@@ -14,6 +14,7 @@ public class Model implements Serializable {
         this.students = new Hashtable<String, String>();
         this.courses = new ArrayList<Course>();
     }
+    
     //#region Get/Set
     public Hashtable<String, String> getStudents() {
         return this.students;
