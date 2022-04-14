@@ -9,5 +9,6 @@ public enum RequestType {
     EDIT_QUIZ,
     DELETE_QUIZ,
     GRADE_QUIZ,
-    TAKE_QUIZ
+    TAKE_QUIZ,
+    DISCONNECT
 }
