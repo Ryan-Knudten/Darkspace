@@ -1,6 +1,6 @@
 package DataControl;
-import java.io.*;
 
+import java.io.*;
 import Model.Model;
 
 public class AppData {

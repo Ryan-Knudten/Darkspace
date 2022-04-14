@@ -15,6 +15,7 @@
             "name": "Launch Client",
             "request": "launch",
             "mainClass": "Executables.Client",
+            "preLaunchTask": "delay",
             "projectName": "CS180-Project5_9b155632"
         },
         {
@@ -28,7 +29,7 @@
     "compounds": [
         {
             "name": "Compound",
-            "configurations": ["Launch Server", "Launch Client"]
+            "configurations": ["Launch Server", "Launch Client"],
         }
     ]
 }
