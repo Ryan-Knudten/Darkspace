@@ -2,6 +2,8 @@ package Networking;
 
 import java.io.*;
 import java.net.Socket;
+
+import DataControl.AppData;
 import DataControl.Controller;
 
 public class ServerThread extends Thread {
@@ -26,7 +28,7 @@ public class ServerThread extends Thread {
                 oos.flush();
             }
         } catch (Exception e) {
-            System.out.println("Client Disconnected");
+            e.printStackTrace();
             return;
         }
     }

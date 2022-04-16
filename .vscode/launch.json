@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch P5TestClass",
-            "request": "launch",
-            "mainClass": "P5TestClass",
-            "projectName": "CS180-Project5_d0f01e80"
-        },
-        {
-            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -35,7 +28,7 @@
     ],
     "compounds": [
         {
-            "name": "Compound",
+            "name": "Server->Client",
             "configurations": ["Launch Server", "Launch Client"],
         }
     ]
