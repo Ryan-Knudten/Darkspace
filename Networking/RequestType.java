@@ -1,6 +1,7 @@
 package Networking;
 
 public enum RequestType {
+    REFRESH,
     CREATE_USER,
     LOGIN_USER,
     DELETE_USER,

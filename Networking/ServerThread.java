@@ -2,6 +2,8 @@ package Networking;
 
 import java.io.*;
 import java.net.Socket;
+
+import DataControl.AppData;
 import DataControl.Controller;
 
 public class ServerThread extends Thread {
