@@ -28,7 +28,7 @@ public class ServerThread extends Thread {
                 oos.flush();
             }
         } catch (Exception e) {
-            System.out.println("Client Disconnected");
+            e.printStackTrace();
             return;
         }
     }

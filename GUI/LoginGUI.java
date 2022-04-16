@@ -31,7 +31,11 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == createAccountButton) {
                 ArrayList<Object> data = new ArrayList<Object>();
+                data.add(usernameBox.getText());
+                data.add(passwordBox.getText());
+                data.add(userTypeBox.getSelectedItem());
                 Request request = new Request(RequestType.CREATE_USER, data);
+
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
                 JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
@@ -40,15 +44,18 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
             }
             if (e.getSource() == loginButton) {
                 ArrayList<Object> data = new ArrayList<Object>();
+                data.add(usernameBox.getText());
+                data.add(passwordBox.getText());
                 Request request = new Request(RequestType.LOGIN_USER, data);
+
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
                 if(callback.getDidRequestWork()) {
                     frame.dispose();
                     if(userTypeBox.getSelectedItem().equals("Student")) {
-                        //Open Student Window
+                        System.out.println("OPEN STUDENT WINDOW");
                     } else {
-                        //Open Teacher Window
+                        System.out.println("OPEN TEACHER WINDOW");
                     }
                 } else {
                     JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
