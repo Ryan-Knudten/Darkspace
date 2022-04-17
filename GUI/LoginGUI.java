@@ -2,12 +2,13 @@ package GUI;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
 import javax.swing.*;
 
+import GUI.Colors.Colors;
 import Model.Model;
 import Networking.Callback;
 import Networking.Request;
@@ -26,21 +27,31 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
 
     private JFrame frame;
 
+    private Font titleFont;
+    private Font textFont;
+    private Color backgroundColor = Colors.SPACE_CADET;
+    private Color textColor = Colors.WHITE;
+    private Color buttonColor = Colors.MANATEE;
+
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == createAccountButton) {
-                ArrayList<Object> data = new ArrayList<Object>();
-                data.add(usernameBox.getText());
-                data.add(passwordBox.getText());
-                data.add(userTypeBox.getSelectedItem());
-                Request request = new Request(RequestType.CREATE_USER, data);
-
-                Callback callback = requestCallback(request);
-                model = callback.getModel();
-                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
-                usernameBox.setText("");
-                passwordBox.setText("");
+                if (usernameBox.getText().equals("") || passwordBox.getText().equals("")) {
+                    JOptionPane.showMessageDialog(frame, "Entries cannot be blank.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    ArrayList<Object> data = new ArrayList<Object>();
+                    data.add(usernameBox.getText());
+                    data.add(passwordBox.getText());
+                    data.add(userTypeBox.getSelectedItem());
+                    Request request = new Request(RequestType.CREATE_USER, data);
+    
+                    Callback callback = requestCallback(request);
+                    model = callback.getModel();
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                    usernameBox.setText("");
+                    passwordBox.setText("");
+                }
             }
             if (e.getSource() == loginButton) {
                 ArrayList<Object> data = new ArrayList<Object>();
@@ -70,6 +81,16 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
         this.model = new Model();
         this.ois = ois;
         this.oos = oos;
+
+        try {
+            File file = new File("GUI/Fonts/Landasans-Medium.otf");
+            Font font = Font.createFont(Font.TRUETYPE_FONT, file);
+            titleFont = font.deriveFont(50.0f);
+            textFont = font.deriveFont(18.0f);
+        } catch (Exception e) {
+            titleFont = new Font("Serif", Font.BOLD, 50);
+            textFont = new Font("Serif", Font.BOLD, 20);
+        }
     }
 
     public void run() {
@@ -81,16 +102,23 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
 
         JLabel titleLabel = new JLabel("Darkspace");
         //#region Title
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        titleLabel.setFont(titleFont);
+        titleLabel.setForeground(new Color(255, 255, 255));
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         //#endregion
 
         JPanel textBoxPanel = new JPanel(new GridLayout(5, 0));
         //#region Text Boxes
+        textBoxPanel.setForeground(new Color(255,255,255));
+        textBoxPanel.setBackground(backgroundColor);
         usernameBox = new JTextField();
+        usernameBox.setFont(textFont);
         passwordBox = new JTextField();
+        passwordBox.setFont(textFont);
         userTypeBox = new JComboBox<>();
+        userTypeBox.setFont(textFont);
+        userTypeBox.setAlignmentY(-5);
         userTypeBox.addItem("Student");
         userTypeBox.addItem("Teacher");
         textBoxPanel.add(userTypeBox);
@@ -102,32 +130,45 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
 
         JPanel labelPanel = new JPanel(new GridLayout(5, 0));
         //#region Labels
+        labelPanel.setBackground(backgroundColor);
         JLabel usernameLabel = new JLabel("Username: ");
         usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         usernameLabel.setVerticalAlignment(SwingConstants.CENTER);
         usernameLabel.setVerticalTextPosition(SwingConstants.CENTER);
+        usernameLabel.setFont(textFont);
+        usernameLabel.setForeground(textColor);
         JLabel passwordLabel = new JLabel("Password: ");
         passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         passwordLabel.setVerticalAlignment(SwingConstants.CENTER);
         passwordLabel.setVerticalTextPosition(SwingConstants.CENTER);
+        passwordLabel.setFont(textFont);
+        passwordLabel.setForeground(textColor);
         JLabel userTypeLabel = new JLabel("Sign in as: ");
         userTypeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         userTypeLabel.setVerticalAlignment(SwingConstants.CENTER);
         userTypeLabel.setVerticalTextPosition(SwingConstants.CENTER);
+        userTypeLabel.setFont(textFont);
+        userTypeLabel.setForeground(textColor);
+        userTypeLabel.setBackground(backgroundColor);
         labelPanel.add(userTypeLabel);
         labelPanel.add(new JLabel());
         labelPanel.add(usernameLabel);
         labelPanel.add(passwordLabel);
         labelPanel.add(new JLabel());
+        
         //#endregion
 
         JPanel buttonPanel = new JPanel(new GridLayout(6, 0));
         //#region Buttons
+        buttonPanel.setBackground(backgroundColor);
         createAccountButton = new JButton("Create Account");
         createAccountButton.addActionListener(actionListener);
-        createAccountButton.setBackground(new Color(46,168,245));
+        createAccountButton.setBackground(buttonColor);
+        createAccountButton.setFont(textFont);
         loginButton = new JButton("Login");
         loginButton.addActionListener(actionListener);
+        loginButton.setFont(textFont);
+        loginButton.setBackground(buttonColor);
         buttonPanel.add(loginButton);
         buttonPanel.add(new JLabel());
         buttonPanel.add(createAccountButton);
@@ -138,6 +179,7 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
         
         JPanel gridPanel = new JPanel(new GridLayout(3, 3));
         //#region Main Grid
+        gridPanel.setBackground(backgroundColor);
         gridPanel.add(new JLabel());
         gridPanel.add(titleLabel);
         gridPanel.add(new JLabel());
@@ -151,10 +193,11 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
         
         content.add(gridPanel, BorderLayout.CENTER);
 
-        frame.setSize(600, 400);
-        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
     }
 
     public Callback requestCallback(Request request) {

@@ -31,7 +31,7 @@ public class Controller {
                 String userName = (String) request.getData().get(0);
                 String password = (String) request.getData().get(1);
                 String userType = (String) request.getData().get(2);
-             return createUser(userName, password, userType);
+                return createUser(userName, password, userType);
 
             case LOGIN_USER:
                 userName = (String) request.getData().get(0);
@@ -84,19 +84,17 @@ public class Controller {
     }
 
     public Callback createUser(String userName, String password, String userType) {
-        // synchronized (model) {
-        // creates variable lists that contains the keys of the hashtables
         Set<String> studentKeys = model.getStudents().keySet();
-        Iterator<String> studentItr = studentKeys.iterator();
         Set<String> teacherKeys = model.getTeachers().keySet();
-        Iterator<String> teacherItr = teacherKeys.iterator();
-        // loops through the keys
-        while (studentItr.hasNext() || teacherItr.hasNext()) {
-            //must search thru hashmap for username
-            if (model.getStudents().containsKey(userName)) {
-                return new Callback(model, false, "Student account already exists");
-            } else if (model.getTeachers().containsKey(userName)) {
-                return new Callback(model, false, "Teacher account already exists");
+
+        for(String key : studentKeys) {
+            if(userName.equals(key)) {
+                return new Callback(model, false, "Account already exists!");
+            }
+        }
+        for(String key : teacherKeys) {
+            if(userName.equals(key)) {
+                return new Callback(model, false, "Account already exists!");
             }
         }
         if (userType.equals("Student")) {
@@ -106,8 +104,6 @@ public class Controller {
             model.getTeachers().put(userName, password);
             return new Callback(model, true, "Account Created!");
         }
-
-        // }
     }
 
     public Callback loginUser(String userName, String password) {
