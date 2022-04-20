@@ -1,10 +1,12 @@
 package DataControl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
 import Model.Course;
 import Model.Model;
+import Model.Quiz;
 import Networking.Callback;
 import Networking.Request;
 
@@ -63,6 +65,18 @@ public class Controller {
 
             case TAKE_QUIZ:
                 return null;
+
+            case REFRESH:
+                Model model = new Model();
+                ArrayList<String> students = new ArrayList<String>();
+                students.add("Ryan");
+                for(int i = 0; i < 20; i++) {
+                    Course course = new Course("Course: " + i, "yomama");
+                    course.setStudents(students);
+                    course.getQuizzes().add(new Quiz("Quiz: " + i));
+                    model.getCourses().add(course);
+                }
+                return new Callback(model, true, "WOOPEPE");
 
             default:
                 return null;
