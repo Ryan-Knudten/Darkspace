@@ -7,6 +7,7 @@ public enum RequestType {
     DELETE_USER,
     CREATE_COURSE,
     DELETE_COURSE,
+    LEAVE_COURSE,
     CREATE_QUIZ,
     EDIT_QUIZ,
     DELETE_QUIZ,

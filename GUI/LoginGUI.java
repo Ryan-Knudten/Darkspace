@@ -63,10 +63,10 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
                 model = callback.getModel();
                 if(callback.getDidRequestWork()) {
                     frame.dispose();
-                    if(userTypeBox.getSelectedItem().equals("Student")) {
+                    if(model.getStudents().containsKey(usernameBox.getText())) {
                         StudentGUI studentGUI = new StudentGUI(usernameBox.getText(), model, oos, ois);
                         SwingUtilities.invokeLater(studentGUI);
-                    } else {
+                    } else if (model.getTeachers().containsKey(usernameBox.getText())) {
                         System.out.println("OPEN TEACHER WINDOW");
                     }
                 } else {

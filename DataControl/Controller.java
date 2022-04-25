@@ -73,7 +73,17 @@ public class Controller {
                 for(int i = 0; i < 20; i++) {
                     Course course = new Course("Course: " + i, "yomama");
                     course.setStudents(students);
-                    course.getQuizzes().add(new Quiz("Quiz: " + i));
+                    if (i % 2 == 0) {
+                        Quiz quiz = new Quiz("Math");
+                        ArrayList<String> questions = new ArrayList<String>();
+                        questions.add("What day is it?\nA. Mon\nB. Tues\nC. Wed\nD. Thur");
+                        questions.add("What day is it?\nA. Mon\nB. Tues\nC. Wed\nD. Thur");
+                        questions.add("What day is it?\nA. Mon\nB. Tues\nC. Wed\nD. Thur");
+                        questions.add("What day is it?\nA. Mon\nB. Tues\nC. Wed\nD. Thur");
+                        quiz.setQuestions(questions);
+                        course.getQuizzes().add(quiz);
+
+                    }
                     model.getCourses().add(course);
                 }
                 return new Callback(model, true, "WOOPEPE");
@@ -134,7 +144,10 @@ public class Controller {
                 } else {
                     return new Callback(model, false, "Incorrect password.");
                 }
-            } else if (teacherKeys.contains(key)) {
+            }
+        }
+        for(String key : teacherKeys) {
+            if (teacherKeys.contains(key)) {
                 if (password.equals(teachers.get(key))) {
                     return new Callback(model, true, "success");
                 } else {
