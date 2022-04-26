@@ -7,6 +7,7 @@
         {
             "type": "java",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "name": "Launch Tests",
             "request": "launch",
             "mainClass": "DataControl.Tests",
@@ -28,6 +29,8 @@
         },
         {
             "type": "java",
+=======
+>>>>>>> main
 =======
 >>>>>>> main
             "name": "Launch Current File",
