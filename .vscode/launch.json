@@ -6,6 +6,7 @@
     "configurations": [
         {
             "type": "java",
+<<<<<<< HEAD
             "name": "Launch Tests",
             "request": "launch",
             "mainClass": "DataControl.Tests",
@@ -27,6 +28,8 @@
         },
         {
             "type": "java",
+=======
+>>>>>>> main
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -49,7 +52,7 @@
     ],
     "compounds": [
         {
-            "name": "Compound",
+            "name": "Server->Client",
             "configurations": ["Launch Server", "Launch Client"],
         }
     ]

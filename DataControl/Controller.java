@@ -85,8 +85,7 @@ public class Controller {
         }
     }
 
-    // must make multiple fails at every place it could fail
-
+    //#region Functions
     public Callback createCourse(String name, String teacher) {
         // synchronized (model) {
 
@@ -101,11 +100,9 @@ public class Controller {
     }
 
     public Callback createUser(String userName, String password, String userType) {
-        // synchronized (model) {
-        // creates variable lists that contains the keys of the hashtables
         Set<String> studentKeys = model.getStudents().keySet();
-        Iterator<String> studentItr = studentKeys.iterator();
         Set<String> teacherKeys = model.getTeachers().keySet();
+<<<<<<< HEAD
         Iterator<String> teacherItr = teacherKeys.iterator();
         // loops through the keys
         while (studentItr.hasNext() || teacherItr.hasNext()) {
@@ -114,20 +111,37 @@ public class Controller {
                 return new Callback(model, false, "Student account already exists");
             } else if (model.getTeachers().containsKey(userName)) {
                 return new Callback(model, false, "Teacher account already exists");
+=======
+
+        for(String key : studentKeys) {
+            if(userName.equals(key)) {
+                return new Callback(model, false, "Account already exists!");
+            }
+        }
+        for(String key : teacherKeys) {
+            if(userName.equals(key)) {
+                return new Callback(model, false, "Account already exists!");
+>>>>>>> main
             }
         }
         if (userType.equals("Student")) {
             model.getStudents().put(userName, password);
+<<<<<<< HEAD
             return new Callback(model, true, "Account successfully created.");
         } else {
             model.getTeachers().put(userName, password);
             return new Callback(model, true, "Account successfully created.");
+=======
+            return new Callback(model, true, "Account Created!");
+        } else {
+            model.getTeachers().put(userName, password);
+            return new Callback(model, true, "Account Created!");
+>>>>>>> main
         }
-
-        // }
     }
 
     public Callback loginUser(String userName, String password) {
+<<<<<<< HEAD
         // make incorrect user, password, and both
         Set<String> studentKeys = model.getStudents().keySet();
         Iterator<String> studentItr = studentKeys.iterator();
@@ -256,4 +270,58 @@ public class Controller {
     // accept ryans changes
     // pick main for launch.json
     // adress merge conflicts
+=======
+        Set<String> studentKeys = model.getStudents().keySet();
+        var students = model.getStudents();
+
+        Set<String> teacherKeys = model.getTeachers().keySet();
+        var teachers = model.getTeachers();
+
+        for(String key : studentKeys) {
+            if (studentKeys.contains(key)) {
+                if (password.equals(students.get(key))) {
+                    return new Callback(model, true, "success");
+                } else {
+                    return new Callback(model, false, "Incorrect password.");
+                }
+            } else if (teacherKeys.contains(key)) {
+                if (password.equals(teachers.get(key))) {
+                    return new Callback(model, true, "success");
+                } else {
+                    return new Callback(model, false, "Incorrect password.");
+                }
+            }
+        }
+        return new Callback(model, false, "Invalid username");
+    }
+
+    // public Callback deleteUser(String userName) {
+    //     // for student must delete from list, the courses, and their quizzes inside of
+    //     // those courses
+    //     // for teachers must delete from has and their course
+    //     // only neg call back is for when user doesn't exist
+
+    //     // creates variable lists that contains the keys of the hashtables
+    //     Set<String> studentKeys = model.getStudents().keySet();
+    //     Iterator<String> studentItr = studentKeys.iterator();
+    //     Set<String> teacherKeys = model.getTeachers().keySet();
+    //     Iterator<String> teacherItr = teacherKeys.iterator();
+    //     // loops through the keys
+    //     while (studentItr.hasNext() || teacherItr.hasNext()) {
+    //         if (model.getStudents().equals(userName)) {
+    //             return new Callback(model, true, "Student deleted");
+    //         } else if (model.getTeachers().equals(userName)) {
+    //             model.getTeachers().put(null, null);
+    //             // iterate through courses and if it matches teacher name delete it
+    //             for (int i = 0; i < model.getCourses().size(); i++) {
+    //                 if (model.getCourses().get(i).contains(userName)) {
+    //                     model.getCourses().get(i).remove(o)
+    //                 }
+    //             }
+    //             return new Callback(model, true, "Teacher deleted");
+    //         }
+    //     }
+    // }
+    //#endregion
+>>>>>>> main
 }
