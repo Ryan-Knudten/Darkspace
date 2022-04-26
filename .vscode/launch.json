@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Tests",
+            "request": "launch",
+            "mainClass": "DataControl.Tests",
+            "projectName": "CS180-Project5_d0f01e80"
+        },
+        {
+            "type": "java",
             "name": "Launch MethodTests",
             "request": "launch",
             "mainClass": "DataControl.MethodTests",
