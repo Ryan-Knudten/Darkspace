@@ -15,21 +15,21 @@
             "name": "Launch Client",
             "request": "launch",
             "mainClass": "Executables.Client",
-            "preLaunchTask": "delay",
-            "projectName": "CS180-Project5_9b155632"
+            "projectName": "CS180-Project5_8f049083"
         },
         {
             "type": "java",
             "name": "Launch Server",
             "request": "launch",
             "mainClass": "Executables.Server",
-            "projectName": "CS180-Project5_9b155632"
+            "projectName": "CS180-Project5_8f049083"
         }
+        
     ],
     "compounds": [
         {
             "name": "Server->Client",
-            "configurations": ["Launch Server", "Launch Client"],
+            "configurations": ["Launch Server", "Launch Client"]
         }
     ]
 }

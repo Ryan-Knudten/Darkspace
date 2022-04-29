@@ -134,15 +134,17 @@ public class Controller {
                 } else {
                     return new Callback(model, false, "Incorrect password.");
                 }
-            } else if (teacherKeys.contains(key)) {
-                if (password.equals(teachers.get(key))) {
-                    return new Callback(model, true, "success");
-                } else {
-                    return new Callback(model, false, "Incorrect password.");
-                }
             }
         }
-        return new Callback(model, false, "Invalid username");
+         for(String keyTwo : teacherKeys) {
+             if ((teacherKeys.contains(keyTwo)) )
+                if (password.equals(teachers.get(keyTwo))) {
+                    return new Callback(model, true, "success");
+                } else {
+                    return new Callback(model, false, "Incorrect password hello.");
+                }
+            }
+        return new Callback(model, false, "Invalid username test");
     }
 
     // public Callback deleteUser(String userName) {

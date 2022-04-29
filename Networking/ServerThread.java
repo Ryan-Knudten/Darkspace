@@ -22,6 +22,8 @@ public class ServerThread extends Thread {
             while (true) {
                 Request request = (Request)ois.readObject();
                 Callback callback = controller.handleRequest(request);
+                //delete reset line before merging
+                oos.reset();
                 oos.writeObject(callback);
                 oos.flush();
             }
