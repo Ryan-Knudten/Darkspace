@@ -1,18 +1,24 @@
 package DataControl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
 import Model.Course;
 import Model.Model;
+import Model.Quiz;
+import Model.Submission;
 import Networking.Callback;
 import Networking.Request;
+import Networking.RequestType;
 
 public class Controller {
     private Model model;
 
     public Controller(Model model) {
         this.model = model;
+        this.model = handleRequest(new Request(RequestType.REFRESH, null)).getModel();
+        //REMOVE THIS ALERT ALERT
     }
 
     // #region Get/Set
@@ -47,22 +53,50 @@ public class Controller {
                 return createCourse(name, teacher);
 
             case DELETE_COURSE:
-                return null;
+                String courseName = (String) request.getData().get(0);
+                return deleteCourse(courseName);
 
             case CREATE_QUIZ:
-                return null;
+                courseName = (String) request.getData().get(0);
+                Quiz quiz = (Quiz) request.getData().get(1);
+                return createQuiz(courseName, quiz);
+
+            case JOIN_COURSE:
+                courseName = (String) request.getData().get(0);
+                name = (String) request.getData().get(1);
+                return joinCourse(courseName, name);
+
+            case LEAVE_COURSE:
+                courseName = (String) request.getData().get(0);
+                name = (String) request.getData().get(1);
+                return leaveCourse(courseName, name);
 
             case EDIT_QUIZ:
-                return null;
+                courseName = (String) request.getData().get(0);
+                quiz = (Quiz) request.getData().get(1);
+                return editQuiz(courseName, quiz);
 
             case DELETE_QUIZ:
-                return null;
+                courseName = (String) request.getData().get(0);
+                var quizName = (String) request.getData().get(1);
+                return deleteQuiz(courseName, quizName);
 
             case GRADE_QUIZ:
-                return null;
+                courseName = (String) request.getData().get(0);
+                quizName = (String) request.getData().get(1);
+                var studentName = (String) request.getData().get(2);
+                var points = (ArrayList<Integer>) request.getData().get(3);
+                return gradeQuiz(courseName, quizName, studentName, points);
 
             case TAKE_QUIZ:
-                return null;
+                courseName = (String) request.getData().get(0);
+                quizName = (String) request.getData().get(1);
+                userName = (String) request.getData().get(2);
+                Submission submission = (Submission) request.getData().get(3);
+                return takeQuiz(courseName, quizName, userName, submission);
+
+            case REFRESH:
+                return new Callback(model, true, "Refresh Successful");
 
             default:
                 return null;
@@ -71,16 +105,13 @@ public class Controller {
 
     //#region Functions
     public Callback createCourse(String name, String teacher) {
-        // synchronized (model) {
-
         for (Course course : model.getCourses()) {
             if (course.getName().equals(name)) {
                 return new Callback(model, false, "Course already exists");
             }
         }
         model.getCourses().add(new Course(name, teacher));
-        return new Callback(model, true, "success");
-        // }
+        return new Callback(model, true, "Course Created!");
     }
 
     public Callback createUser(String userName, String password, String userType) {
@@ -106,6 +137,26 @@ public class Controller {
         }
     }
 
+    public Callback leaveCourse(String courseName, String username) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (String student : course.getStudents()) {
+                    if (student.equals(username)) {
+                        course.getStudents().remove(student);
+                        for (Quiz quiz : course.getQuizzes()) {
+                            if (quiz.getSubmissions().containsKey(username)) {
+                                quiz.getSubmissions().remove(username);
+                            }
+                        }
+                        return new Callback(model, true, "You have left the course.");
+                    }
+                }
+                return new Callback(model, false, "You were not in this course.");
+            }
+        }
+        return new Callback(model, false, "This course does not exist.");
+    }
+
     public Callback loginUser(String userName, String password) {
         Set<String> studentKeys = model.getStudents().keySet();
         var students = model.getStudents();
@@ -113,50 +164,136 @@ public class Controller {
         Set<String> teacherKeys = model.getTeachers().keySet();
         var teachers = model.getTeachers();
 
-        for(String key : studentKeys) {
-            if (studentKeys.contains(key)) {
-                if (password.equals(students.get(key))) {
-                    return new Callback(model, true, "success");
-                } else {
-                    return new Callback(model, false, "Incorrect password.");
-                }
-            } else if (teacherKeys.contains(key)) {
-                if (password.equals(teachers.get(key))) {
-                    return new Callback(model, true, "success");
-                } else {
-                    return new Callback(model, false, "Incorrect password.");
-                }
+        if (studentKeys.contains(userName)) {
+            if (password.equals(students.get(userName))) {
+                return new Callback(model, true, "success");
+            } else {
+                return new Callback(model, false, "Incorrect password.");
+            }
+        }
+        if (teacherKeys.contains(userName)) {
+            if (password.equals(teachers.get(userName))) {
+                return new Callback(model, true, "success");
+            } else {
+                return new Callback(model, false, "Incorrect password.");
             }
         }
         return new Callback(model, false, "Invalid username");
     }
 
-    // public Callback deleteUser(String userName) {
-    //     // for student must delete from list, the courses, and their quizzes inside of
-    //     // those courses
-    //     // for teachers must delete from has and their course
-    //     // only neg call back is for when user doesn't exist
+    public Callback joinCourse(String courseName, String userName) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (String student : course.getStudents()) {
+                    if (student.equals(userName)) {
+                        return new Callback(model, false, "You are already in this class.");
+                    }
+                }
+                course.getStudents().add(userName);
+                course.setStudents(course.getStudents());
+                return new Callback(this.model, true, "Joined class successfully");
+            }
+        }
+        return new Callback(model, false, "Course does not exist.");
+    }
 
-    //     // creates variable lists that contains the keys of the hashtables
-    //     Set<String> studentKeys = model.getStudents().keySet();
-    //     Iterator<String> studentItr = studentKeys.iterator();
-    //     Set<String> teacherKeys = model.getTeachers().keySet();
-    //     Iterator<String> teacherItr = teacherKeys.iterator();
-    //     // loops through the keys
-    //     while (studentItr.hasNext() || teacherItr.hasNext()) {
-    //         if (model.getStudents().equals(userName)) {
-    //             return new Callback(model, true, "Student deleted");
-    //         } else if (model.getTeachers().equals(userName)) {
-    //             model.getTeachers().put(null, null);
-    //             // iterate through courses and if it matches teacher name delete it
-    //             for (int i = 0; i < model.getCourses().size(); i++) {
-    //                 if (model.getCourses().get(i).contains(userName)) {
-    //                     model.getCourses().get(i).remove(o)
-    //                 }
-    //             }
-    //             return new Callback(model, true, "Teacher deleted");
-    //         }
-    //     }
-    // }
-    //#endregion
+    public Callback deleteCourse(String name) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(name)) {
+                model.getCourses().remove(course);
+                return new Callback(model, true, "Course successfully deleted.");
+            }
+        }
+        return new Callback(model, false, "Course does not exist");
+    }
+
+    public Callback createQuiz(String courseName, Quiz quiz) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (Quiz courseQuiz : course.getQuizzes()) {
+                    if (courseQuiz.getName().equals(quiz.getName())) {
+                        return new Callback(model, false, "Quiz already exists");
+                    }
+                }
+                course.getQuizzes().add(quiz);
+                return new Callback(model, true, "Quiz added successfully");
+            }
+        }
+        return new Callback(model, false, "Course does not exist.");
+    }
+
+    public Callback editQuiz(String courseName, Quiz newQuiz) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (Quiz prevQuiz : course.getQuizzes()) {
+                    if (prevQuiz.getName().equals(newQuiz.getName())) {
+                        course.getQuizzes().remove(prevQuiz);
+                        course.getQuizzes().add(newQuiz);
+                        return new Callback(model, true, "Quiz has been changed.");
+                    }
+                }
+                return new Callback(model, false, "This quiz does not exist.");
+            }
+        }
+        return new Callback(model, false, "This course does not exist.");
+    } 
+
+    public Callback deleteQuiz(String courseName, String quizName) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (Quiz quiz : course.getQuizzes()){
+                    if (quiz.getName().equals(quizName)) {
+                        course.getQuizzes().remove(quiz);
+                        return new Callback(model, true, "Quiz removed successfully.");
+                    }
+                }
+                return new Callback(model, false, "Quiz does not exist.");
+            }
+        }
+        return new Callback(model, false, "Course does not exist.");
+    }
+
+    public Callback gradeQuiz(String courseName, String quizName, String studentName, ArrayList<Integer> points) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (Quiz quiz : course.getQuizzes()) {
+                    if (quiz.getName().equals(quizName)) {
+                        if (quiz.getSubmissions().containsKey(studentName)) {
+                            var submission = quiz.getSubmissions().get(studentName);
+                            if (submission.getIsTaken()) {
+                                submission.setIsGraded(true);
+                                submission.setPoints(points);
+                                return new Callback(model, true, "Quiz graded.");
+                            } else {
+                                return new Callback(model, false, "Quiz not taken yet.");
+                            }
+                        } else {
+                            return new Callback(model, false, "This student does not exist.");
+                        }
+                    }
+                }
+                return new Callback(model, false, "Quiz does not exist.");
+            }
+        }
+        return new Callback(model, false, "Course does not exist.");
+    }
+
+    public Callback takeQuiz(String courseName, String quizName, String studentName, Submission submission) {
+        for (Course course : model.getCourses()) {
+            if (course.getName().equals(courseName)) {
+                for (Quiz quiz : course.getQuizzes()) {
+                    if (quiz.getName().equals(quizName)) {
+                        if (!quiz.getSubmissions().containsKey(studentName)) {
+                            quiz.getSubmissions().put(studentName, submission);
+                            return new Callback(model, true, "Quiz Submitted!");
+                        } else { 
+                            return new Callback(model, false, "Quiz already taken.");
+                        }
+                    }
+                }
+                return new Callback(model, false, "Quiz does not exist.");
+            }
+        }
+        return new Callback(model, false, "Course does not exist.");
+    }
 }

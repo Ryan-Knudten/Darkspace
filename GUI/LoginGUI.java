@@ -62,12 +62,14 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
                 if(callback.getDidRequestWork()) {
-                    frame.dispose();
-                    if(userTypeBox.getSelectedItem().equals("Student")) {
-                        System.out.println("OPEN STUDENT WINDOW");
-                    } else {
-                        System.out.println("OPEN TEACHER WINDOW");
+                    if(model.getStudents().containsKey(usernameBox.getText())) {
+                        StudentGUI studentGUI = new StudentGUI(usernameBox.getText(), model, oos, ois);
+                        SwingUtilities.invokeLater(studentGUI);
+                    } else if (model.getTeachers().containsKey(usernameBox.getText())) {
+                        TeacherGUI teacherGUI = new TeacherGUI(usernameBox.getText(), model, oos, ois);
+                        SwingUtilities.invokeLater(teacherGUI);
                     }
+                    frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
                     usernameBox.setText("");
@@ -202,7 +204,7 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
 
     public Callback requestCallback(Request request) {
         try {
-            oos.writeObject(new Request(request.getRequestType(), request.getData()));
+            oos.writeObject(request);
             oos.flush();
             return (Callback)ois.readObject();
         } catch (Exception e) {

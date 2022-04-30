@@ -2,8 +2,6 @@ package Networking;
 
 import java.io.*;
 import java.net.Socket;
-
-import DataControl.AppData;
 import DataControl.Controller;
 
 public class ServerThread extends Thread {
@@ -20,10 +18,10 @@ public class ServerThread extends Thread {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.flush();
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
             while (true) {
-                Request request = (Request)ois.readObject();
+                Request request = (Request)ois.readUnshared();
                 Callback callback = controller.handleRequest(request);
+                oos.reset();
                 oos.writeObject(callback);
                 oos.flush();
             }

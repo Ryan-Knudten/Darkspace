@@ -1,24 +1,43 @@
 package Model;
 
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Submission implements Serializable {
-    private Hashtable<String, Integer> responses;
+    private ArrayList<String> responses;
+    private ArrayList<Integer> points;
+    private LocalDateTime submissionTime;
     private boolean isGraded;
     private boolean isTaken;
 
     public Submission() {
-        this.responses = new Hashtable<String, Integer>();
+        this.responses = new ArrayList<String>();
     }
     
     //#region Get/Set
-    public Hashtable<String, Integer> getResponses() {
+    public ArrayList<String> getResponses() {
         return this.responses;
     }
 
-    public void setResponses(Hashtable<String, Integer> responses) {
+    public void setResponses(ArrayList<String> responses) {
         this.responses = responses;
+    }
+
+    public ArrayList<Integer> getPoints() {
+        return this.points;
+    }
+
+    public void setPoints(ArrayList<Integer> points) {
+        this.points = points;
+    }
+
+    public LocalDateTime getSubmissionTime() {
+        return submissionTime;
+    }
+
+    public void setSubmissionTime(LocalDateTime submissionTime) {
+        this.submissionTime = submissionTime;
     }
 
     public boolean getIsGraded() {

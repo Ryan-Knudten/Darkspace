@@ -1,6 +1,5 @@
 package GUI;
 
-import Model.Model;
 import Networking.Callback;
 import Networking.Request;
 
