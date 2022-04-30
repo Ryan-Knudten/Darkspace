@@ -1,14 +1,11 @@
 package GUI;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Hashtable;
-
-import javax.imageio.ImageIO;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,9 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -45,7 +40,7 @@ import Networking.Callback;
 import Networking.Request;
 import Networking.RequestType;
 
-public class StudentGUI extends JComponent implements Runnable { //TODO: Implement GUI.java
+public class StudentGUI extends JComponent implements Runnable, GUI { //TODO: Implement GUI.java
     private Model model;
     private String username;
     private ObjectOutputStream oos;
@@ -62,6 +57,7 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
     private JScrollPane workspace;
 
     private JPanel takeQuizGrid;
+    private JPanel viewQuizGrid;
 
     private JPanel quizNavGrid;
     private String selectedCourse;
@@ -78,6 +74,7 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
     private Font header2Font;
     private Font textFont;
 
+    //#region Listeners
     private ActionListener mainListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -86,7 +83,8 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
 
-                courseNav.setViewportView(createCourseNavGrid());
+                courseNav.setViewportView(createCourseNavGrid()); 
+                workspace.setViewportView(createQuizPanel(selectedCourse));
             }
             if(e.getSource() == accountButton) {
                 int option = JOptionPane.showConfirmDialog(frame, "Would you like to log out?", "Darkspace", JOptionPane.YES_NO_OPTION);
@@ -94,6 +92,30 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
                     frame.dispose();
                     LoginGUI gui = new LoginGUI(ois, oos);
                     SwingUtilities.invokeLater(gui);
+                }
+            }
+            if(e.getSource() == joinCourseButton) {
+                ArrayList<String> availCourses = new ArrayList<String>();
+                for (Course course : model.getCourses()) {
+                    if (!course.getStudents().contains(username)) {
+                        availCourses.add(course.getName());
+                    }
+                }
+                if (availCourses.size() != 0) {
+                    int option = JOptionPane.showOptionDialog(frame, "Choose a course to join:", "Darkspace", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, availCourses.toArray(), null);
+                    if (option != -1) {
+                        var data = new ArrayList<Object>();
+                        data.add(availCourses.get(option));
+                        data.add(username);
+                        Request request = new Request(RequestType.JOIN_COURSE, data);
+                        Callback callback = requestCallback(request);
+                        model = callback.getModel();
+                        courseNav.setViewportView(createCourseNavGrid()); 
+                        workspace.setViewportView(createQuizPanel(selectedCourse));
+                        JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "No courses available to join", "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -108,20 +130,19 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
                 if (course.getName().equals(selectedCourse)) {
                     for (Quiz quiz : course.getQuizzes()) {
                         if (quiz.getName().equals(quizName)) {
-                            if (!quiz.getSubmissions().containsKey(username)) {
-                                if (button.getText().equals("Take Quiz")) {
-                                    workspace.setViewportView(createTakeQuizPanel(quiz));
+                            if (button.getText().equals("Take Quiz")) {
+                                workspace.setViewportView(createTakeQuizPanel(quiz));
+                                return;
+                            } else {
+                                if (!quiz.getSubmissions().get(username).getIsGraded()) {
+                                    JOptionPane.showMessageDialog(frame, "Quiz not graded. Check back later.", "Darkspace", JOptionPane.ERROR_MESSAGE);
                                     return;
                                 } else {
-                                    if (!quiz.getSubmissions().get(username).getIsGraded()) {
-                                        JOptionPane.showMessageDialog(frame, "Quiz not graded. Check back later.", "Darkspace", JOptionPane.ERROR_MESSAGE);
-                                        return;
-                                    } else {
-                                        //workspace.setViewportView(createViewQuizPanel(quizName, quiz.getSubmissions().get(username)));
-                                        return;
-                                    }
+                                    workspace.setViewportView(createViewQuizPanel(quiz));
+                                    return;
                                 }
                             }
+                            
                         }
                     }
                 }
@@ -166,33 +187,39 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
             var panel = ((JButton)e.getSource()).getParent();
 
             Submission submission = new Submission();
-            Hashtable<String, Integer> hash = new Hashtable<String, Integer>();
+            ArrayList<String> responses = new ArrayList<String>();
+            ArrayList<Integer> points = new ArrayList<Integer>();
 
             for (Component comp : panel.getComponents()) {
                 if (comp instanceof JComboBox) {
                     var cb = (JComboBox<String>)comp;
-                    hash.put((String)cb.getSelectedItem(), null);
+                    responses.add((String)cb.getSelectedItem());
+                    points.add(-1);
                 }
             }
 
-            submission.setResponses(hash);
+            submission.setResponses(responses);
+            submission.setPoints(points);
+            submission.setIsTaken(true);
+            submission.setSubmissionTime(LocalDateTime.now());
 
             ArrayList<Object> data = new ArrayList<Object>();
-            data.add(username);
             data.add(selectedCourse);
             data.add(((JLabel)panel.getComponent(0)).getText());
+            data.add(username);
             data.add(submission);
-            Request request = new Request(RequestType.SUBMIT_QUIZ, data);
+            Request request = new Request(RequestType.TAKE_QUIZ, data);
             Callback callback = requestCallback(request);
             model = callback.getModel();
 
             if(!callback.getDidRequestWork()) {
                 JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
             }
 
-            workspace.setViewportView(createNoQuizPanel());
+            courseNav.setViewportView(createCourseNavGrid()); 
+            workspace.setViewportView(createQuizPanel(selectedCourse));
         }
     };
 
@@ -202,22 +229,28 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
             JMenuItem item = (JMenuItem)e.getSource();
             JPopupMenu popup = (JPopupMenu)item.getParent();
             ArrayList<Object> data = new ArrayList<Object>();
-            data.add(username);
             data.add(popup.getName());
+            data.add(username);
             Request request = new Request(RequestType.LEAVE_COURSE, data);
             Callback callback = requestCallback(request);
             model = callback.getModel();
-            if(!callback.getDidRequestWork()) {
-                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+            if (selectedCourse != null && selectedCourse.equals(popup.getName())) {
+                workspace.setViewportView(createSelectCoursePanel());
             }
+            courseNav.setViewportView(createCourseNavGrid());
         }
     };
+    //#endregion
 
     public StudentGUI(String username, Model model, ObjectOutputStream oos, ObjectInputStream ois) {
         this.username = username;
         this.model = model;
         this.oos = oos;
         this.ois = ois;
+
+        // Callback callback = requestCallback(new Request(RequestType.REFRESH, null));
+        // this.model = callback.getModel();
 
         try {
             File file = new File("GUI/Fonts/Exo-Regular.ttf");
@@ -232,9 +265,6 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
     }
 
     public void run() {
-        Callback callback = requestCallback(new Request(RequestType.REFRESH, null));
-        this.model = callback.getModel();
-
         frame = new JFrame("Darkspace");
         Container content = frame.getContentPane();
         content.setLayout(new BorderLayout());
@@ -355,16 +385,10 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
         workspace.setColumnHeaderView(workspaceHeader);
 
         //#region selectCourseLabel
-        JPanel selectCoursePanel = new JPanel(new BorderLayout());
-        JLabel selectCourseLabel = new JLabel("Select a Course.");
-        selectCourseLabel.setFont(textFont);
-        selectCourseLabel.setHorizontalAlignment(JLabel.CENTER);
-        selectCourseLabel.setHorizontalTextPosition(JLabel.CENTER);
-        selectCoursePanel.setBackground(Colors.SILVER_SAND);
-        selectCoursePanel.add(selectCourseLabel, BorderLayout.CENTER);
+
         //#endregion
 
-        workspace.setViewportView(selectCoursePanel);
+        workspace.setViewportView(createSelectCoursePanel());
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 1;
@@ -380,6 +404,7 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
         joinCourseButton.setForeground(Colors.WHITE);
         joinCourseButton.setFont(textFont);
         joinCourseButton.setFocusPainted(false);
+        joinCourseButton.addActionListener(mainListener);
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -390,6 +415,16 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
         //#endregion
         mainGrid.add(joinCourseButton, gbc);
 
+        //#region usernameLabel
+        JLabel usernameLabel = new JLabel(username + " ");
+        usernameLabel.setForeground(Colors.WHITE);
+        usernameLabel.setFont(header2Font);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridy = 2;
+        mainGrid.add(usernameLabel, gbc);
+        //#endregion
 
         content.add(mainGrid, BorderLayout.CENTER);
 
@@ -423,6 +458,7 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
                     leaveCourseItem.setText("Leave Course");
                     leaveCourseItem.addActionListener(leaveCourseListener);
                     popup.add(leaveCourseItem);
+                    popup.setName(course.getName());
                     gbc = new GridBagConstraints();
                     gbc.fill = GridBagConstraints.HORIZONTAL;
                     gbc.gridx = 0;
@@ -444,6 +480,147 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
         courseNavGrid.add(new JLabel(), gbc);
         //Empty Space Filler
         return courseNavGrid;
+    }
+
+    private JPanel createViewQuizPanel(Quiz quiz) {
+        GridBagLayout gbl = new GridBagLayout();
+
+        takeQuizGrid = new JPanel(new GridBagLayout());
+        takeQuizGrid.setBorder(new LineBorder(Colors.WHITE, 30));
+        takeQuizGrid.setBackground(Colors.WHITE);
+        var gbc = new GridBagConstraints();
+        int i = 0;
+
+        //#region Quiz Title
+        JLabel quizTitle = new JLabel(quiz.getName());
+        quizTitle.setFont(header2Font);
+        gbc.gridy = i;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        i++;
+        gbc.weightx = 1;
+        takeQuizGrid.add(quizTitle, gbc);
+        //#endregion
+
+        Submission submission = quiz.getSubmissions().get(username);
+
+        //#region Submission Time
+        LocalDateTime time = submission.getSubmissionTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        JLabel timeLabel = new JLabel("Submitted at: " + formatter.format(time));
+        timeLabel.setFont(textFont);
+        gbc.gridy = i;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        i++;
+        gbc.weightx = 1;
+        takeQuizGrid.add(timeLabel, gbc);
+        //#endregion
+
+        //#region Total Score
+        int score = 0;
+        for(Integer s : submission.getPoints()) {
+            score += s;
+        }
+        JLabel scoreLabel = new JLabel("Total Score: " + score);
+        scoreLabel.setFont(textFont);
+        gbc.gridy = i;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        i++;
+        gbc.weightx = 1;
+        takeQuizGrid.add(scoreLabel, gbc);
+        //#endregion
+
+        int questionIndex = 0;
+
+        for (String question : quiz.getQuestions()) {
+            gbc = new GridBagConstraints();
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(Box.createVerticalStrut(30), gbc);
+
+            String[] lines = question.split("\n"); 
+            JLabel questionText = new JLabel("Question " + ((i - 1) / 7 + 1) + ": " + lines[0], SwingConstants.LEFT);
+            questionText.setFont(header2Font);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(questionText, gbc);
+
+            //#region Answer Choices
+            JLabel aText = new JLabel(lines[1]);
+            aText.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(aText, gbc);
+
+            JLabel bText = new JLabel(lines[2]);
+            bText.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(bText, gbc);
+
+            JLabel cText = new JLabel(lines[3]);
+            cText.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(cText, gbc);
+
+            JLabel dText = new JLabel(lines[4]);
+            dText.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(dText, gbc);
+
+    
+            //#endregion
+
+            JLabel responseLabel = new JLabel("Your Response: " + submission.getResponses().get(questionIndex));
+            responseLabel.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(responseLabel, gbc);
+
+            JLabel pointsLabel = new JLabel("Points Earned: " + submission.getPoints().get(questionIndex));
+            questionIndex++;
+            pointsLabel.setFont(textFont);
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.gridy = i;
+            i++;
+            takeQuizGrid.add(pointsLabel, gbc);
+        }
+
+        //#region Button Gap
+        gbc = new GridBagConstraints();
+        gbc.gridy = i;
+        i++;
+        takeQuizGrid.add(Box.createVerticalStrut(30), gbc);
+        //#endregion
+
+        
+        //#endregion
+        return takeQuizGrid;
+    }
+
+    private JPanel createSelectCoursePanel() {
+        JPanel selectCoursePanel = new JPanel(new BorderLayout());
+        JLabel selectCourseLabel = new JLabel("Select a Course.");
+        selectCourseLabel.setFont(textFont);
+        selectCourseLabel.setHorizontalAlignment(JLabel.CENTER);
+        selectCourseLabel.setHorizontalTextPosition(JLabel.CENTER);
+        selectCoursePanel.setBackground(Colors.SILVER_SAND);
+        selectCoursePanel.add(selectCourseLabel, BorderLayout.CENTER);
+        return selectCoursePanel;
     }
 
     private JPanel createTakeQuizPanel(Quiz quiz) {
@@ -555,12 +732,14 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
 
     private JPanel createQuizPanel(String courseName) {
         //QuizGrid
+        boolean noQuiz = true;
         var quizGrid = new JPanel(new GridBagLayout());
         var gbc = new GridBagConstraints();
         int i = 0;
         for(Course course : model.getCourses()) {
             if (course.getName().equals(courseName)) {
                 for (Quiz quiz : course.getQuizzes()) {
+                    noQuiz = false;
                     JPanel quizPanel = new JPanel(new GridBagLayout());
                     quizPanel.setBackground(Colors.SILVER_SAND);
                     quizPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -610,11 +789,17 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
         gbc.gridy = i + 1;
         gbc.weighty = 1;
         quizGrid.add(new JLabel(), gbc);
+
+        if (noQuiz) {
+            quizGrid = createNoQuizPanel();
+        }
+
         return quizGrid;
     }
 
     private JPanel createNoQuizPanel() {
         JPanel noQuizPanel = new JPanel(new BorderLayout());
+        noQuizPanel.setBackground(Colors.SILVER_SAND);
         JLabel noQuizLabel = new JLabel("No Quizzes Available");
         noQuizLabel.setFont(textFont);
         noQuizLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -626,10 +811,11 @@ public class StudentGUI extends JComponent implements Runnable { //TODO: Impleme
 
     public Callback requestCallback(Request request) {
         try {
-            oos.writeObject(new Request(request.getRequestType(), request.getData()));
+            oos.writeUnshared(request);
             oos.flush();
-            return (Callback)ois.readObject();
+            return (Callback)ois.readUnshared();
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Server Connection Ended.", "Darkspace", JOptionPane.ERROR_MESSAGE);
             frame.dispose();
             return null;
