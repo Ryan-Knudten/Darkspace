@@ -17,8 +17,6 @@ public class Controller {
 
     public Controller(Model model) {
         this.model = model;
-        this.model = handleRequest(new Request(RequestType.REFRESH, null)).getModel();
-        //REMOVE THIS ALERT ALERT
     }
 
     // #region Get/Set
@@ -32,75 +30,92 @@ public class Controller {
     // #endregion
 
     public synchronized Callback handleRequest(Request request) {
+        Callback callback;
         switch (request.getRequestType()) {
             case CREATE_USER:
                 String userName = (String) request.getData().get(0);
                 String password = (String) request.getData().get(1);
                 String userType = (String) request.getData().get(2);
-                return createUser(userName, password, userType);
+                callback = createUser(userName, password, userType);
+                break;
 
             case LOGIN_USER:
                 userName = (String) request.getData().get(0);
                 password = (String) request.getData().get(1);
-                return loginUser(userName, password);
+                callback = loginUser(userName, password);
+                break;
 
             case DELETE_USER:
-                return null;
+                userName = (String) request.getData().get(0);
+                callback = deleteUser(userName);
+                break;
 
             case CREATE_COURSE:
                 String name = (String) request.getData().get(0);
                 String teacher = (String) request.getData().get(1);
-                return createCourse(name, teacher);
+                callback = createCourse(name, teacher);
+                break;
 
             case DELETE_COURSE:
                 String courseName = (String) request.getData().get(0);
-                return deleteCourse(courseName);
+                callback = deleteCourse(courseName);
+                break;
 
             case CREATE_QUIZ:
                 courseName = (String) request.getData().get(0);
                 Quiz quiz = (Quiz) request.getData().get(1);
-                return createQuiz(courseName, quiz);
+                callback = createQuiz(courseName, quiz);
+                break;
 
             case JOIN_COURSE:
                 courseName = (String) request.getData().get(0);
                 name = (String) request.getData().get(1);
-                return joinCourse(courseName, name);
+                callback = joinCourse(courseName, name);
+                break;
 
             case LEAVE_COURSE:
                 courseName = (String) request.getData().get(0);
                 name = (String) request.getData().get(1);
-                return leaveCourse(courseName, name);
+                callback = leaveCourse(courseName, name);
+                break;
 
             case EDIT_QUIZ:
                 courseName = (String) request.getData().get(0);
                 quiz = (Quiz) request.getData().get(1);
-                return editQuiz(courseName, quiz);
+                callback = editQuiz(courseName, quiz);
+                break;
 
             case DELETE_QUIZ:
                 courseName = (String) request.getData().get(0);
                 var quizName = (String) request.getData().get(1);
-                return deleteQuiz(courseName, quizName);
+                callback = deleteQuiz(courseName, quizName);
+                break;
 
             case GRADE_QUIZ:
                 courseName = (String) request.getData().get(0);
                 quizName = (String) request.getData().get(1);
                 var studentName = (String) request.getData().get(2);
                 var points = (ArrayList<Integer>) request.getData().get(3);
-                return gradeQuiz(courseName, quizName, studentName, points);
+                callback = gradeQuiz(courseName, quizName, studentName, points);
+                break;
 
             case TAKE_QUIZ:
                 courseName = (String) request.getData().get(0);
                 quizName = (String) request.getData().get(1);
                 userName = (String) request.getData().get(2);
                 Submission submission = (Submission) request.getData().get(3);
-                return takeQuiz(courseName, quizName, userName, submission);
+                callback = takeQuiz(courseName, quizName, userName, submission);
+                break;
 
             case REFRESH:
-                return new Callback(model, true, "Refresh Successful");
+                callback = new Callback(model, true, "Refresh Successful");
+                break;
 
             default:
                 return null;
         }
+        AppData.saveData(model, "AppData.txt");
+        return callback;
     }
 
     //#region Functions
@@ -112,6 +127,39 @@ public class Controller {
         }
         model.getCourses().add(new Course(name, teacher));
         return new Callback(model, true, "Course Created!");
+    }
+
+    public Callback deleteUser(String username) {
+        for (String student : model.getStudents().keySet()) {
+            if (student.equals(username)) {
+                model.getStudents().remove(username);
+                for (Course course : model.getCourses()) {
+                    for (String studentName : course.getStudents()) {
+                        if (studentName.equals(username)) {
+                            course.getStudents().remove(studentName);
+                        }
+                    }
+                    for (Quiz quiz : course.getQuizzes()) {
+                        if (quiz.getSubmissions().containsKey(username)) {
+                            quiz.getSubmissions().remove(username);
+                        }
+                    }
+                }
+                return new Callback(model, true, "User account \"" + username + "\" deleted successsfully.");
+            }
+        }
+        for (String teacher : model.getTeachers().keySet()) {
+            if (teacher.equals(username)) {
+                model.getTeachers().remove(username);
+                for (Course course : model.getCourses()) {
+                    if (course.getTeacher().equals(username)) {
+                        model.getCourses().remove(course);
+                    }
+                }
+                return new Callback(model, true, "User account \"" + username + "\" deleted successsfully.");
+            }
+        }
+        return new Callback(model, false, "This user does not exist.");
     }
 
     public Callback createUser(String userName, String password, String userType) {

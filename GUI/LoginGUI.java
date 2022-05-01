@@ -80,7 +80,6 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
     };
 
     public LoginGUI(ObjectInputStream ois, ObjectOutputStream oos) {
-        this.model = new Model();
         this.ois = ois;
         this.oos = oos;
 

@@ -57,16 +57,16 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
     private ActionListener mainListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == refreshButton) {
+            if (e.getSource() == refreshButton) {
                 Request request = new Request(RequestType.REFRESH, null);
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
 
                 courseNav.setViewportView(createCourseNavGrid()); 
             }
-            if(e.getSource() == accountButton) {
+            if (e.getSource() == accountButton) {
                 int option = JOptionPane.showConfirmDialog(frame, "Would you like to log out?", "Darkspace", JOptionPane.YES_NO_OPTION);
-                if(option == JOptionPane.YES_OPTION) {
+                if (option == JOptionPane.YES_OPTION) {
                     frame.dispose();
                     LoginGUI gui = new LoginGUI(ois, oos);
                     SwingUtilities.invokeLater(gui);
@@ -74,7 +74,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
             }
             if (e.getSource() == createCourseButton) {
                 String courseName = JOptionPane.showInputDialog(frame, "Enter Course Name:", "Darkspace", JOptionPane.INFORMATION_MESSAGE);
-                if (!courseName.equals("") && courseName != null) {
+                if (courseName != null && !courseName.equals("")) {
                     var data = new ArrayList<Object>();
                     data.add(courseName);
                     data.add(username);
@@ -810,7 +810,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         mainGrid.add(createCourseButton, gbc);
 
         //#region usernameLabel
-        JLabel usernameLabel = new JLabel("Signed in as: " + username + "  ");
+        JLabel usernameLabel = new JLabel(username + " ");
         usernameLabel.setForeground(Colors.WHITE);
         usernameLabel.setFont(header2Font);
         gbc = new GridBagConstraints();
