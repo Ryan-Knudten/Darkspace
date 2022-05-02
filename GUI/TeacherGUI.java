@@ -810,7 +810,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         mainGrid.add(createCourseButton, gbc);
 
         //#region usernameLabel
-        JLabel usernameLabel = new JLabel("Signed in as: " + username + "  ");
+        JLabel usernameLabel = new JLabel(username + "  ");
         usernameLabel.setForeground(Colors.WHITE);
         usernameLabel.setFont(header2Font);
         gbc = new GridBagConstraints();
