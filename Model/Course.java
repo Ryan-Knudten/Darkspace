@@ -3,6 +3,17 @@ package Model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Course
+ *
+ * Contains array of quizzes and submissions
+ * Contains one teacher user
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Course implements Serializable {
     ArrayList<String> students;
     String teacher;

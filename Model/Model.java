@@ -4,6 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+/**
+ * Model
+ *
+ * All application data is packaged into this class
+ * Contains arrays of courses, teacher users, and student users.
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Model implements Serializable {
     private Hashtable<String, String> teachers;
     private Hashtable<String, String> students;

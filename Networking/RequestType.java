@@ -1,5 +1,15 @@
 package Networking;
 
+/**
+ * RequestType
+ *
+ * Enum with all available functions that the server can process
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public enum RequestType {
     REFRESH,
     CREATE_USER,

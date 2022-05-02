@@ -38,7 +38,8 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == createAccountButton) {
                 if (usernameBox.getText().equals("") || passwordBox.getText().equals("")) {
-                    JOptionPane.showMessageDialog(frame, "Entries cannot be blank.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Entries cannot be blank.", 
+                        "Darkspace", JOptionPane.ERROR_MESSAGE);
                 } else {
                     ArrayList<Object> data = new ArrayList<Object>();
                     data.add(usernameBox.getText());
@@ -48,7 +49,8 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
     
                     Callback callback = requestCallback(request);
                     model = callback.getModel();
-                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                        "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                     usernameBox.setText("");
                     passwordBox.setText("");
                 }
@@ -61,8 +63,8 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
 
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
-                if(callback.getDidRequestWork()) {
-                    if(model.getStudents().containsKey(usernameBox.getText())) {
+                if (callback.getDidRequestWork()) {
+                    if (model.getStudents().containsKey(usernameBox.getText())) {
                         StudentGUI studentGUI = new StudentGUI(usernameBox.getText(), model, oos, ois);
                         SwingUtilities.invokeLater(studentGUI);
                     } else if (model.getTeachers().containsKey(usernameBox.getText())) {
@@ -71,7 +73,8 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
                     }
                     frame.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                        "Darkspace", JOptionPane.ERROR_MESSAGE);
                     usernameBox.setText("");
                     passwordBox.setText("");
                 }
@@ -208,7 +211,8 @@ public class LoginGUI extends JComponent implements Runnable, GUI {
             oos.flush();
             return (Callback)ois.readObject();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Server Connection Ended.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Server Connection Ended.", 
+                "Darkspace", JOptionPane.ERROR_MESSAGE);
             frame.dispose();
             return null;
         }

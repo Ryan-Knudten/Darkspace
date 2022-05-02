@@ -3,6 +3,16 @@ package DataControl;
 import java.io.*;
 import Model.Model;
 
+/**
+ * AppData
+ *
+ * saveData and readData functions for server data persistence 
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class AppData {
     public static Model loadData(String filename) {
         try {
