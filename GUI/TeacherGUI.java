@@ -137,8 +137,13 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
 
-                courseNav.setViewportView(createCourseNavGrid());
-                workspace.setViewportView(createQuizPanel(selectedCourse));
+                if (callback.getDidRequestWork()) {
+                    courseNav.setViewportView(createCourseNavGrid());
+                    workspace.setViewportView(createQuizPanel(selectedCourse));
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     };
@@ -433,7 +438,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
 
 
             int i = editQuizGrid.getComponentCount();
-            int questionNumber = (i - 2) / 11 + 1;
+            int questionNumber = (i - 2) / 10 + 1;
 
             gbc.gridy = i;
             i++;
