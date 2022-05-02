@@ -4,6 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+/**
+ * Quiz
+ *
+ * Contains an array of questions and submissions
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Quiz implements Serializable {
     private ArrayList<String> questions;
     private Hashtable<String, Submission> submissions;

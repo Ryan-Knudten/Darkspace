@@ -4,6 +4,17 @@ import java.io.*;
 import java.net.Socket;
 import DataControl.Controller;
 
+/**
+ * ServerThread
+ *
+ * Instances are spawned when a client connects
+ * Accepts requests and sends callbacks to the clients
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class ServerThread extends Thread {
     private Socket socket;
     private Controller controller;

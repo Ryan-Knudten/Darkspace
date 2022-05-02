@@ -4,6 +4,17 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * Submission
+ *
+ * Contains an array of responses and points awarded
+ * States: isGraded and isTaken
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Submission implements Serializable {
     private ArrayList<String> responses;
     private ArrayList<Integer> points;

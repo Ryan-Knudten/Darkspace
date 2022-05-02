@@ -1,17 +1,26 @@
 package DataControl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
-
 import Model.Course;
 import Model.Model;
 import Model.Quiz;
 import Model.Submission;
 import Networking.Callback;
 import Networking.Request;
-import Networking.RequestType;
 
+/**
+ * Controller
+ *
+ * Holds the server's Model instance (MVC)
+ * Handles Requests through the handleRequest method which returns a Callback
+ * handleRequest is synchronized to prevent race conditions
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Controller {
     private Model model;
 
@@ -133,13 +142,13 @@ public class Controller {
         Set<String> studentKeys = model.getStudents().keySet();
         Set<String> teacherKeys = model.getTeachers().keySet();
 
-        for(String key : studentKeys) {
-            if(userName.equals(key)) {
+        for (String key : studentKeys) {
+            if (userName.equals(key)) {
                 return new Callback(model, false, "Account already exists!");
             }
         }
-        for(String key : teacherKeys) {
-            if(userName.equals(key)) {
+        for (String key : teacherKeys) {
+            if (userName.equals(key)) {
                 return new Callback(model, false, "Account already exists!");
             }
         }

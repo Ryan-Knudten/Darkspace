@@ -3,6 +3,18 @@ package Networking;
 import java.io.Serializable;
 import Model.Model;
 
+/**
+ * Callback
+ *
+ * Holds a copy of the servers model,
+ * a boolean representing whether or not the request succeeded, and
+ * a success/fail message
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Callback implements Serializable {
     private Model model;
     private boolean didRequestWork;

@@ -2,6 +2,16 @@ package GUI.Colors;
 
 import java.awt.*;
 
+/**
+ * Colors
+ *
+ * Contains Color.java constants for the GUIs
+ *
+ * @author Ryan Knudten, 22
+ *
+ * @version 5/1/22
+ *
+ */
 public class Colors {
     public static final Color MANATEE = new Color(141, 153, 174);
     public static final Color SPACE_CADET = new Color(43, 45, 66);

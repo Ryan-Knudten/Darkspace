@@ -7,11 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.DimensionUIResource;
-
 import GUI.Colors.Colors;
 import Model.Course;
 import Model.Model;
@@ -20,7 +18,7 @@ import Networking.Callback;
 import Networking.Request;
 import Networking.RequestType;
 
-public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Implement GUI.java
+public class TeacherGUI extends JComponent implements Runnable, GUI {
     private Model model;
     private String username;
     private ObjectOutputStream oos;
@@ -31,7 +29,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
     private JPanel mainGrid;
 
     private JScrollPane courseNav;
-    //
+    
     private JPanel courseNavGrid;
     private JButton createCourseButton;
 
@@ -58,16 +56,17 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
     private ActionListener mainListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == refreshButton) {
+            if (e.getSource() == refreshButton) {
                 Request request = new Request(RequestType.REFRESH, null);
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
 
                 courseNav.setViewportView(createCourseNavGrid()); 
             }
-            if(e.getSource() == accountButton) {
-                int option = JOptionPane.showConfirmDialog(frame, "Would you like to log out?", "Darkspace", JOptionPane.YES_NO_OPTION);
-                if(option == JOptionPane.YES_OPTION) {
+            if (e.getSource() == accountButton) {
+                int option = JOptionPane.showConfirmDialog(frame, "Would you like to log out?", 
+                    "Darkspace", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
                     frame.dispose();
                     LoginGUI gui = new LoginGUI(ois, oos);
                     SwingUtilities.invokeLater(gui);
@@ -80,24 +79,28 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 Callback callback = requestCallback(request);
                 model = callback.getModel();
 
-                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                    "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose();
                 LoginGUI gui = new LoginGUI(ois, oos);
                 SwingUtilities.invokeLater(gui);
             }
             if (e.getSource() == createCourseButton) {
-                String courseName = JOptionPane.showInputDialog(frame, "Enter Course Name:", "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                String courseName = JOptionPane.showInputDialog(frame, "Enter Course Name:", 
+                    "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                 if (!courseName.equals("") && courseName != null) {
                     var data = new ArrayList<Object>();
                     data.add(courseName);
                     data.add(username);
                     Request request = new Request(RequestType.CREATE_COURSE, data);
                     Callback callback = requestCallback(request);
-                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                        "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                     model = callback.getModel();
                     courseNav.setViewportView(createCourseNavGrid());
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Course name cannot be empty.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Course name cannot be empty.", 
+                        "Darkspace", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -122,16 +125,18 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 }  
             }
             if (hasEmpty) {
-                JOptionPane.showMessageDialog(frame, "All fields must have entries.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "All fields must have entries.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else if (createQuizGrid.getComponentCount() <= 7) {
-                JOptionPane.showMessageDialog(frame, "A quiz must have at least one question.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "A quiz must have at least one question.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else {
                 int numComps = createQuizGrid.getComponentCount();
                 String quizTitle = ((JTextField)createQuizGrid.getComponent(1)).getText();
                 Quiz quiz = new Quiz(quizTitle);
                 ArrayList<String> questions = new ArrayList<String>();
 
-                for(int i = 4; i < numComps - 3; i += 11) {
+                for (int i = 4; i < numComps - 3; i += 11) {
                     String questionText = ((JTextField)createQuizGrid.getComponent(i)).getText();
                     String AText = ((JTextField)createQuizGrid.getComponent(i + 2)).getText();
                     String BText = ((JTextField)createQuizGrid.getComponent(i + 4)).getText();
@@ -153,9 +158,11 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 if (callback.getDidRequestWork()) {
                     courseNav.setViewportView(createCourseNavGrid());
                     workspace.setViewportView(createQuizPanel(selectedCourse));
-                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                        "Darkspace", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                        "Darkspace", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -189,11 +196,13 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 }  
             }
             if (hasEmpty) {
-                JOptionPane.showMessageDialog(frame, "All fields must have entries.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "All fields must have entries.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else if (editQuizGrid.getComponentCount() <= 6) {
-                JOptionPane.showMessageDialog(frame, "A quiz must have at least one question.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "A quiz must have at least one question.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else {
-                for(int i = 3; i < numComps - 3; i += 11) {
+                for (int i = 3; i < numComps - 3; i += 11) {
                     String questionText = ((JTextField)editQuizGrid.getComponent(i)).getText();
                     String AText = ((JTextField)editQuizGrid.getComponent(i + 2)).getText();
                     String BText = ((JTextField)editQuizGrid.getComponent(i + 4)).getText();
@@ -214,7 +223,8 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
 
                 courseNav.setViewportView(createCourseNavGrid());
                 workspace.setViewportView(createQuizPanel(selectedCourse));
-                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                    "Darkspace", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     };
@@ -243,9 +253,12 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 }
             }
             if (invalidInt) {
-                JOptionPane.showMessageDialog(frame, "Point values must be integers and all questions must be scored.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, 
+                    "Point values must be integers and all questions must be scored.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(frame, "Grade Submitted!", "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Grade Submitted!", 
+                    "Darkspace", JOptionPane.INFORMATION_MESSAGE);
 
                 var data = new ArrayList<Object>();
                 data.add(selectedCourse);
@@ -273,7 +286,8 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
             Request request = new Request(RequestType.DELETE_COURSE, data);
             Callback callback = requestCallback(request);
             model = callback.getModel();
-            JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                "Darkspace", JOptionPane.INFORMATION_MESSAGE);
             if (selectedCourse != null && selectedCourse.equals(popup.getName())) {
                 workspace.setViewportView(createSelectCoursePanel());
             }
@@ -293,7 +307,8 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
             Callback callback = requestCallback(request);
 
             model = callback.getModel();
-            JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, callback.getMessage(), 
+                "Darkspace", JOptionPane.INFORMATION_MESSAGE);
 
             courseNav.setViewportView(createCourseNavGrid());
             workspace.setViewportView(createQuizPanel(selectedCourse));
@@ -621,11 +636,13 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
                 }
             }
             if (options.length == 0) {
-                JOptionPane.showMessageDialog(frame, "No students have taken this quiz yet.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "No students have taken this quiz yet.", 
+                    "Darkspace", JOptionPane.ERROR_MESSAGE);
             } else {
                 JComboBox<Object> combo = new JComboBox<Object>(options);
-                int option = JOptionPane.showConfirmDialog(frame, combo, "Choose a student:", JOptionPane.OK_CANCEL_OPTION);
-                if(option == JOptionPane.YES_OPTION) {
+                int option = JOptionPane.showConfirmDialog(frame, combo, 
+                    "Choose a student:", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
                     workspace.setViewportView(gradeQuizPanel(selectedQuiz, (String)combo.getSelectedItem()));
                 }
             }
@@ -636,13 +653,13 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton button = (JButton)e.getSource();
-            for(Course course : model.getCourses()) {
-                if(course.getName().equals(button.getText())) {
+            for (Course course : model.getCourses()) {
+                if (course.getName().equals(button.getText())) {
                     selectedCourse = course.getName();
                     workspace.setViewportView(createQuizPanel(button.getText()));
                 }
             }
-            for(Component comp : courseNavGrid.getComponents()) {
+            for (Component comp : courseNavGrid.getComponents()) {
                 if (comp instanceof JButton) {
                     JButton b = (JButton)comp;
                     if (b.getText().equals(selectedCourse)) {
@@ -858,10 +875,10 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         var gbc = new GridBagConstraints();
         courseNavGrid = new JPanel(new GridBagLayout());
         int i = 0;
-        for(Course course : model.getCourses()) {
+        for (Course course : model.getCourses()) {
             if (course.getTeacher().equals(username)) {
                 JButton button = new JButton(course.getName());
-                if(selectedCourse != null && selectedCourse.equals(course.getName())) {
+                if (selectedCourse != null && selectedCourse.equals(course.getName())) {
                     button.setBackground(Colors.RHYTHM);
                 } else {
                     button.setBackground(Colors.MANATEE);
@@ -911,8 +928,6 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
     }
 
     private JPanel gradeQuizPanel(Quiz quiz, String studentName) {
-        GridBagLayout gbl = new GridBagLayout();
-
         gradeQuizGrid = new JPanel(new GridBagLayout());
         gradeQuizGrid.setBorder(new LineBorder(Colors.WHITE, 30));
         gradeQuizGrid.setBackground(Colors.WHITE);
@@ -938,7 +953,8 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         gradeQuizGrid.add(studentLabel, gbc);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        JLabel timeLabel = new JLabel("Submitted At: " + formatter.format(quiz.getSubmissions().get(studentName).getSubmissionTime()));
+        JLabel timeLabel = new JLabel("Submitted At: " + formatter.format(quiz.getSubmissions()
+            .get(studentName).getSubmissionTime()));
         timeLabel.setFont(header2Font);
         gbc.gridy = i;
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -1058,8 +1074,6 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
     }
 
     private JPanel createCreateQuizPanel() {
-        GridBagLayout gbl = new GridBagLayout();
-
         createQuizGrid = new JPanel(new GridBagLayout());
         createQuizGrid.setBorder(new LineBorder(Colors.WHITE, 30));
         createQuizGrid.setBackground(Colors.WHITE);
@@ -1226,9 +1240,6 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
             i++;
             editQuizGrid.add(DBox, gbc);
 
-
-
-            
             addEditQuizFunctions(quizName);
         }
 
@@ -1361,7 +1372,7 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
         var quizGrid = new JPanel(new GridBagLayout());
         var gbc = new GridBagConstraints();
         int i = 0;
-        for(Course course : model.getCourses()) {
+        for (Course course : model.getCourses()) {
             if (course.getName().equals(courseName)) {
                 for (Quiz quiz : course.getQuizzes()) {
                     JPanel quizPanel = new JPanel(new GridBagLayout());
@@ -1447,7 +1458,8 @@ public class TeacherGUI extends JComponent implements Runnable, GUI { //TODO: Im
             return (Callback)ois.readUnshared();
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Server Connection Ended.", "Darkspace", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Server Connection Ended.", 
+                "Darkspace", JOptionPane.ERROR_MESSAGE);
             frame.dispose();
             return null;
         }
