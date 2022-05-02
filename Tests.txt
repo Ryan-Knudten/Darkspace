@@ -1,0 +1,243 @@
+Darkspace Tests
+
+Test 1: Edit Quiz
+
+User launches application as Teacher.
+User selects the username textbox.
+User enters username via the keyboard
+User selects the password textbox.
+User enters password via the keyboard
+User clicks “Login” button
+User clicks “Create Course” button
+User selects the course name textbox.
+User enters a course name.
+User clicks “OK”
+User clicks “OK”
+User clicks course button
+User clicks “Create New Quiz”
+User clicks “Add Question”
+User completes quiz form
+User clicks “Confirm”
+User right clicks on quiz
+User clicks “Edit Quiz”
+User makes changes to questions
+User clicks “Confirm”
+
+Expected Result: Application changes the quiz information and gives all students who have previously taken the quiz another chance with the updated quiz.
+
+Test Status: Passed
+
+Test 2: Delete Quiz
+
+User launches application as Teacher
+User selects the username textbox.
+User enters username via the keyboard
+User selects the password textbox.
+User enters password via the keyboard
+User clicks “Login” button
+User clicks “Create Course” button
+User selects the course name textbox.
+User enters a course name.
+User clicks “OK”
+User clicks “OK”
+User clicks course button
+User clicks “Create New Quiz”
+User clicks “Add Question”
+User completes quiz form
+User clicks “Confirm”
+User right clicks on quiz
+User clicks “Delete Quiz”
+
+Expected Result: Quiz along with all submissions should be deleted and not visible after all clients refresh
+
+Test Status: Passed
+
+Test 3: Grade Quiz
+(Test should be completed after a quiz is successfully created and taken)
+User launches application as Teacher
+User selects the username textbox.
+User enters username via the keyboard
+User selects the password textbox.
+User enters password via the keyboard
+User clicks “Login” button
+User selects created course
+User clicks “Grade” for created quiz
+User selects student who submitted quiz
+User enters integer point values for each question
+User clicks “Submit Grade”
+
+Expected Result: Student for corresponding submission should now be able to view the grade after refreshing. Teacher is able to regrade.
+
+Test 4: Take Quiz
+
+(Test should be completed after a quiz is successfully created using a teacher account)
+User launches application as Student
+User selects the username textbox.
+User enters username via the keyboard
+User selects the password textbox.
+User enters password via the keyboard
+User clicks “Login” button
+User clicks “Join Course” button
+User selects created course
+User clicks “Take Quiz” for created quiz
+User selects answers to questions
+User selects “Submit” button
+
+Expected Result: User should not be able to view grade after submitting until the teacher grades the quiz.
+
+Test Status: Passed
+
+Test 5: Create User
+
+User launches program 
+User selects either “teacher” or “student” for log in type from drop down menu
+User selects the username text box
+User enters a username via keyboard 
+User selects password text box
+User enters a password via keyboard
+User clicks “Create Account” button
+
+Expected Result: User should see a message saying “Account Created!”
+
+Test Status: Passed
+
+Test 6: Login User
+
+User launches program 
+User selects the username text box
+User enters the username they created via keyboard 
+User selects password text box
+User enters the password they created via keyboard
+User clicks “Login” button 
+
+Expected Result: User should be taken to their respective GUI dashboard immediately. 
+
+Test Status: Passed
+
+Test 7: Delete User
+
+User launches program 
+User selects the username text box
+User enters the username they created via keyboard 
+User selects password text box
+User enters the password they created via keyboard
+User clicks “Login” button 
+User right clicks on username in bottom right corner
+User selects the delete user button 
+User sees message and selects “OK” button
+
+Expected Result: User should see a message saying “User account “student” deleted successfully” or “User account “teacher” deleted successfully” depending on the login type. Once the “OK” button is pressed, they should be brought to the main menu
+
+Test Status: Passed
+
+Test 8: Create Course
+
+User launches program 
+User selects the username text box
+User enters the username they created via keyboard 
+User selects password text box
+User enters the password they created via keyboard
+User clicks “Login” button 
+User click “Create Course” button in bottom left corner
+User selects course name text box
+User enters course name via keyboard
+User presses “OK” button if satisfied with name or “Cancel” button if they do not want to add it
+
+Expected Result: A message saying “Course Created!” will appear if the user presses the “OK” button when satisfied with course name. If the “Cancel” button is pressed, the user will be returned to the dashboard. 
+
+Test Status: Passed
+
+Test 9: Delete course
+
+User launches application
+User selects the username textbox.
+User enters username via the keyboard.
+User selects the password textbox.
+User enters password
+User selects drop down menu and selects the teacher menu
+User selects the "create account" button. 
+User retypes password and username in respective fields
+User selects “login” button
+User selects the “create course” button
+User types name of course into Option pane
+User selects “ok”
+User selects “ok” again
+User right clicks new course button “Math”
+User selects “Delete Course”
+User selects “ok”
+Expected Result: Application creates and deletes course in teacher menu
+
+Test status: Passed
+
+Test 10: Join Course
+
+User launches application
+User selects the username textbox.
+User enters username via the keyboard.
+User selects the password textbox.
+User enters password
+User selects drop down menu and selects the Student option
+User selects the "create account" button. 
+User retypes password and username in respective fields
+User selects “login” button
+User selects the “Join course” button
+User selects the “Math’ button
+User selects “ok”
+Expected Result: Student joins a course that has already been created by a teacher in another test
+
+Test Status: Passed
+
+Test 11: Leave Course
+
+User launches application
+User selects the username textbox.
+User enters username via the keyboard.
+User selects the password textbox.
+User enters password
+User selects drop down menu and selects the Student option
+User selects the "create account" button. 
+User retypes password and username in respective fields
+User selects “login” button
+User selects the “Join course” button
+User selects the “Math’ button
+User selects “ok”
+User Right clicks course button “Math”
+User clicks “Leave course”
+User selects “ok”
+Expected Result: Student joins and leaves course that was created by teacher
+
+Test Status: Passed
+
+Test 12: Create Quiz
+User launches application
+User selects the username textbox.
+User enters username via the keyboard.
+User selects the password textbox.
+User enters password
+User selects drop down menu and selects the teacher menu
+User selects the "create account" button. 
+User retypes password and username in respective fields
+User selects “login” button
+User selects the “create course” button
+User types name of course into Option pane
+User selects “ok”
+User selects “ok” again
+User clicks new course button “Math”
+User selects “create new quiz button”
+User selects the enter quiz name text field
+User enters  “quiz 1”
+User selects “Add Question”
+User selects the “Question 1” text field
+User types “answer is 1”
+User selects “Answer A:” text field
+User types “1”
+User selects “Answer B:” text field
+User types “2”
+User selects “Answer C:” text field
+User types “3”
+User selects “Answer D:” text field
+User types “4”
+User selects “Confirm”
+Expected Result: Application creates course and a quiz
+
+Test Status: Passed
