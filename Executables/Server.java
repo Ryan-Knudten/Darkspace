@@ -9,7 +9,7 @@ import Networking.ServerThread;
 
 public class Server {
     public static void main(String[] args) throws IOException {
-        Controller controller = new Controller(AppData.loadData("AppData.txt"));
+        Controller controller = new Controller(AppData.loadData("DataControl/AppData.txt"));
 
         ServerSocket serverSocket = new ServerSocket(4242);
         System.out.println("Server created");

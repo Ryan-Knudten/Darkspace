@@ -69,6 +69,7 @@ public class StudentGUI extends JComponent implements Runnable, GUI { //TODO: Im
     private JButton refreshButton;
     private JButton accountButton;
     private JLabel dashboardLabel;
+    private JMenuItem deleteUserItem;
 
     private Font header1Font;
     private Font header2Font;
@@ -93,6 +94,18 @@ public class StudentGUI extends JComponent implements Runnable, GUI { //TODO: Im
                     LoginGUI gui = new LoginGUI(ois, oos);
                     SwingUtilities.invokeLater(gui);
                 }
+            }
+            if (e.getSource() == deleteUserItem) {
+                ArrayList<Object> data = new ArrayList<Object>();
+                data.add(username);
+                Request request = new Request(RequestType.DELETE_USER, data);
+                Callback callback = requestCallback(request);
+                model = callback.getModel();
+
+                JOptionPane.showMessageDialog(frame, callback.getMessage(), "Darkspace", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                LoginGUI gui = new LoginGUI(ois, oos);
+                SwingUtilities.invokeLater(gui);
             }
             if(e.getSource() == joinCourseButton) {
                 ArrayList<String> availCourses = new ArrayList<String>();
@@ -417,6 +430,13 @@ public class StudentGUI extends JComponent implements Runnable, GUI { //TODO: Im
 
         //#region usernameLabel
         JLabel usernameLabel = new JLabel(username + " ");
+
+        JPopupMenu popup = new JPopupMenu();
+        deleteUserItem = new JMenuItem("Delete User");
+        deleteUserItem.addActionListener(mainListener);
+        popup.add(deleteUserItem);
+        usernameLabel.setComponentPopupMenu(popup);
+
         usernameLabel.setForeground(Colors.WHITE);
         usernameLabel.setFont(header2Font);
         gbc = new GridBagConstraints();

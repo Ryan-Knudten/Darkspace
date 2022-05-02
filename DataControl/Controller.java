@@ -46,9 +46,9 @@ public class Controller {
                 break;
 
             case DELETE_USER:
-                // userName = (String) request.getData().get(0);
-                // callback = deleteUser(userName);
-                // break;
+                userName = (String) request.getData().get(0);
+                callback = deleteUser(userName);
+                break;
 
             case CREATE_COURSE:
                 String name = (String) request.getData().get(0);
@@ -114,7 +114,7 @@ public class Controller {
             default:
                 return null;
         }
-        AppData.saveData(model, "AppData.txt");
+        AppData.saveData(model, "DataControl/AppData.txt");
         return callback;
     }
 
@@ -150,6 +150,39 @@ public class Controller {
             model.getTeachers().put(userName, password);
             return new Callback(model, true, "Account Created!");
         }
+    }
+
+    public Callback deleteUser(String username) {
+        for (String student : model.getStudents().keySet()) {
+            if (student.equals(username)) {
+                model.getStudents().remove(username);
+                for (Course course : model.getCourses()) {
+                    for (String studentName : course.getStudents()) {
+                        if (studentName.equals(username)) {
+                            course.getStudents().remove(studentName);
+                        }
+                    }
+                    for (Quiz quiz : course.getQuizzes()) {
+                        if (quiz.getSubmissions().containsKey(username)) {
+                            quiz.getSubmissions().remove(username);
+                        }
+                    }
+                }
+                return new Callback(model, true, "User account \"" + username + "\" deleted successsfully.");
+            }
+        }
+        for (String teacher : model.getTeachers().keySet()) {
+            if (teacher.equals(username)) {
+                model.getTeachers().remove(username);
+                for (Course course : model.getCourses()) {
+                    if (course.getTeacher().equals(username)) {
+                        model.getCourses().remove(course);
+                    }
+                }
+                return new Callback(model, true, "User account \"" + username + "\" deleted successsfully.");
+            }
+        }
+        return new Callback(model, false, "This user does not exist.");
     }
 
     public Callback leaveCourse(String courseName, String username) {
