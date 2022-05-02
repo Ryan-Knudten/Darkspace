@@ -1,5 +1,11 @@
 # CS180-Project5
 
+# Compile and Run
+In order to use Darkspace:
+- Compile the files found in the application directory
+- Run the Server.java file in the Executables folder
+- Run the Client.java file in the Executables folder
+
 # Project Submission
 ## Ryan Knudten - Submitted Vocareum Workspace
 ## Ryan Knudten - Submitted Report on Brightspace
